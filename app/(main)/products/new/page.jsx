@@ -15,14 +15,16 @@ import { Button } from '@components/ui/button'
 import { Card, CardContent, CardTitle, CardHeader } from '@components/ui/card'
 import Image from 'next/image'
 
-const NewProductPage = () => {
-  const { accessToken } = useSWRConfig()
+import CategoriesSelect from './categories-select'
 
+const NewProductPage = () => {
   return (
     <AppWrapper
       title='Thêm sản phẩm'
       routeTree={[{ url: '/products', name: 'Quản lý sản phẩm' }]}
-    ></AppWrapper>
+    >
+      <CategoriesSelect />
+    </AppWrapper>
   )
 }
 

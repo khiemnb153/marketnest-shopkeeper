@@ -81,7 +81,7 @@ const PaginationEllipsis = ({ className, ...props }) => (
     {...props}
   >
     <MoreHorizontal className='h-4 w-4' />
-    <span className='sr-only'>More pages</span>
+    <span className='sr-only'>Nhiều trang nữa</span>
   </span>
 )
 PaginationEllipsis.displayName = 'PaginationEllipsis'
