@@ -20,7 +20,7 @@ const MainLayout = ({ children }) => {
   }
 
   return (
-    <div className='h-full w-full overflow-auto'>
+    <div className='h-full w-full'>
       <SidebarProvider>
         <AppSidebar />
         {children}
