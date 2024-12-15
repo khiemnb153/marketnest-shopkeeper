@@ -19,7 +19,7 @@ export const metadata = {
   title: 'Market Nest | Shopkeeper',
   description: 'A digital marketplace for everything',
   icons: {
-    icon: '/assets/logo.svg',
+    icon: '/logo.png',
   },
 }
 

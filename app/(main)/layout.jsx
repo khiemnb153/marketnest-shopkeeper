@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react'
 import { redirect, usePathname } from 'next/navigation'
 
 import { AppSidebar } from '@components/app-sidebar'
-import { SidebarProvider } from '@/components/ui/sidebar'
+import { SidebarProvider } from '@components/ui/sidebar'
 
 const MainLayout = ({ children }) => {
   const pathname = usePathname()
