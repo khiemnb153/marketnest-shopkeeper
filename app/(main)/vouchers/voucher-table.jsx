@@ -1,99 +1,112 @@
+import { useRouter } from 'next/navigation'
+import { getAbbreviationName } from '@lib/utils'
 import currency from '@lib/currency'
-
-import { EllipsisVertical, Pencil, Info } from 'lucide-react'
+import moment from 'moment/moment'
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@components/ui/table'
 import { Avatar, AvatarImage, AvatarFallback } from '@components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu'
-import { Badge } from '@components/ui/badge'
-import { Button } from '@components/ui/button'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@components/ui/hover-card'
-import Link from 'next/link'
-import Image from 'next/image'
+import { Skeleton } from '@components/ui/skeleton'
 
-import CommonPagination from '@components/common-pagination'
+import VoucherStatusBadge from './voucher-status-badge'
 
-const VoucherTable = ({ data, searchParams }) => {
+const VoucherTable = ({ vouchers, searchParams }) => {
+  const router = useRouter()
+
+  console.log(vouchers)
+
   const { pageIndex, pageSize } = searchParams
-  return (
-    <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className='text-center'>#</TableHead>
-            <TableHead>Mã</TableHead>
-            <TableHead>Chiến dịch</TableHead>
-            <TableHead className='text-center'>Đã sử dụng</TableHead>
-            <TableHead className='text-center'>Trạng thái</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.data.vouchers.map((voucher, index) => (
-            <TableRow key={voucher.id}>
-              <TableCell className='text-center'>{(pageIndex - 1) * pageSize + index + 1}</TableCell>
-              <TableCell className='font-medium'>#{voucher.code}</TableCell>
-              <TableCell>{voucher.campaign}</TableCell>
-              <TableCell className='text-center'>
-                {voucher.used}/{voucher.limits}
-              </TableCell>
-              <TableCell className='text-center'>
-                <Badge
-                  variant='outline'
-                  className='border-green-600 text-green-600 dark:border-green-500 dark:text-green-500'
-                >
-                  {voucher.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant='ghost'
-                      className='h-8 w-8 p-2'
-                    >
-                      <EllipsisVertical />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/vouchers/${voucher.id}`}
-                          className='cursor-pointer'
-                        >
-                          <Info /> Chi tiết
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/vouchers/${voucher.id}/edit`}
-                          className='cursor-pointer'
-                        >
-                          <Pencil /> Sửa
-                        </Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
 
-      <CommonPagination
-        route='/vouchers'
-        searchParams={searchParams}
-        totalPages={data.data.totalPages}
-      />
-    </>
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className='text-center'>#</TableHead>
+          <TableHead>Mã</TableHead>
+          <TableHead>Chiến dịch</TableHead>
+          <TableHead>Ưu đãi</TableHead>
+          <TableHead>Hạn sử dụng</TableHead>
+          <TableHead className='text-center'>Đã sử dụng</TableHead>
+          <TableHead className='text-center'>Trạng thái</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {vouchers.map((voucher, index) => (
+          <TableRow
+            key={voucher.id}
+            className='cursor-pointer'
+            onClick={() => {
+              router.push(`/vouchers/${voucher.id}`)
+            }}
+          >
+            <TableCell className='text-center'>{(pageIndex - 1) * pageSize + index + 1}</TableCell>
+
+            <TableCell>{voucher.code}</TableCell>
+            <TableCell>{voucher.campaign}</TableCell>
+            <TableCell>
+              Giảm {voucher.discountPercentage}%
+              {!!voucher.conditions && (
+                <>
+                  {!!voucher.conditions.max_value && ` tối đa ${currency.format(voucher.conditions.max_value)}`}
+                  {!!voucher.conditions.min_value && ` đơn tổi thiểu ${currency.format(voucher.conditions.min_value)}`}
+                </>
+              )}
+            </TableCell>
+            <TableCell>{moment(voucher.validUntil).format('HH:mm DD/MM/YYYY')}</TableCell>
+            <TableCell className='text-center'>
+              {voucher.used}/{voucher.quantity}
+            </TableCell>
+            <TableCell className='text-center'>
+              <VoucherStatusBadge status={voucher.status} />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  )
+}
+
+export const VoucherTableSkeleton = ({ pageSize }) => {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className='text-center'>#</TableHead>
+          <TableHead>Mã</TableHead>
+          <TableHead>Chiến dịch</TableHead>
+          <TableHead>Ưu đãi</TableHead>
+          <TableHead>Hạn sử dụng</TableHead>
+          <TableHead className='text-center'>Đã sử dụng</TableHead>
+          <TableHead className='text-center'>Trạng thái</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {Array.from({ length: pageSize || 10 }).map((_, index) => (
+          <TableRow key={index}>
+            <TableCell className='text-center'>
+              <Skeleton className='mx-auto h-4 w-4' />
+            </TableCell>
+            <TableCell>
+              <Skeleton className='h-4 w-20' />
+            </TableCell>
+            <TableCell>
+              <Skeleton className='h-4 w-32' />
+            </TableCell>
+            <TableCell>
+              <Skeleton className='h-4 w-48' />
+            </TableCell>
+            <TableCell>
+              <Skeleton className='h-4 w-32' />
+            </TableCell>
+            <TableCell className='text-center'>
+              <Skeleton className='mx-auto h-4 w-16' />
+            </TableCell>
+            <TableCell className='text-center'>
+              <Skeleton className='mx-auto h-6 w-20' />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   )
 }
 
