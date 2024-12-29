@@ -1,55 +1,83 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { getAbbreviationName } from '@lib/utils'
+import useFetch from '@hooks/use-fetch'
 import { cn } from '@lib/utils'
+
+import { Search } from 'lucide-react'
 
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Search, MessageCircle } from 'lucide-react'
 import { ScrollArea } from '@components/ui/scroll-area'
-
-// Mock data for chats
-const chats = [
-  { id: 1, name: 'Alice Johnson', lastMessage: "Hey, how's it going?", avatar: '/avatars/alice.jpg' },
-  { id: 2, name: 'Bob Smith', lastMessage: 'Can we meet tomorrow?', avatar: '/avatars/bob.jpg' },
-  { id: 3, name: 'Carol Williams', lastMessage: 'Thanks for your help!', avatar: '/avatars/carol.jpg' },
-  { id: 4, name: 'David Brown', lastMessage: "I'll send you the files soon.", avatar: '/avatars/david.jpg' },
-  { id: 5, name: 'Eva Davis', lastMessage: 'Looking forward to the weekend!', avatar: '/avatars/eva.jpg' },
-  { id: 11, name: 'Alice Johnson', lastMessage: "Hey, how's it going?", avatar: '/avatars/alice.jpg' },
-  { id: 12, name: 'Bob Smith', lastMessage: 'Can we meet tomorrow?', avatar: '/avatars/bob.jpg' },
-  { id: 13, name: 'Carol Williams', lastMessage: 'Thanks for your help!', avatar: '/avatars/carol.jpg' },
-  { id: 14, name: 'David Brown', lastMessage: "I'll send you the files soon.", avatar: '/avatars/david.jpg' },
-  { id: 15, name: 'Eva Davis', lastMessage: 'Looking forward to the weekend!', avatar: '/avatars/eva.jpg' },
-  { id: 21, name: 'Alice Johnson', lastMessage: "Hey, how's it going?", avatar: '/avatars/alice.jpg' },
-  { id: 22, name: 'Bob Smith', lastMessage: 'Can we meet tomorrow?', avatar: '/avatars/bob.jpg' },
-  { id: 23, name: 'Carol Williams', lastMessage: 'Thanks for your help!', avatar: '/avatars/carol.jpg' },
-  { id: 24, name: 'David Brown', lastMessage: "I'll send you the files soon.", avatar: '/avatars/david.jpg' },
-  { id: 25, name: 'Eva Davis', lastMessage: 'Looking forward to the weekend!', avatar: '/avatars/eva.jpg' },
-  { id: 31, name: 'Alice Johnson', lastMessage: "Hey, how's it going?", avatar: '/avatars/alice.jpg' },
-  { id: 32, name: 'Bob Smith', lastMessage: 'Can we meet tomorrow?', avatar: '/avatars/bob.jpg' },
-  { id: 33, name: 'Carol Williams', lastMessage: 'Thanks for your help!', avatar: '/avatars/carol.jpg' },
-  { id: 34, name: 'David Brown', lastMessage: "I'll send you the files soon.", avatar: '/avatars/david.jpg' },
-  { id: 35, name: 'Eva Davis', lastMessage: 'Looking forward to the weekend!', avatar: '/avatars/eva.jpg' },
-  { id: 41, name: 'Alice Johnson', lastMessage: "Hey, how's it going?", avatar: '/avatars/alice.jpg' },
-  { id: 42, name: 'Bob Smith', lastMessage: 'Can we meet tomorrow?', avatar: '/avatars/bob.jpg' },
-  { id: 43, name: 'Carol Williams', lastMessage: 'Thanks for your help!', avatar: '/avatars/carol.jpg' },
-  { id: 44, name: 'David Brown', lastMessage: "I'll send you the files soon.", avatar: '/avatars/david.jpg' },
-  { id: 45, name: 'Eva Davis', lastMessage: 'Looking forward to the weekend!', avatar: '/avatars/eva.jpg' },
-  { id: 51, name: 'Alice Johnson', lastMessage: "Hey, how's it going?", avatar: '/avatars/alice.jpg' },
-  { id: 52, name: 'Bob Smith', lastMessage: 'Can we meet tomorrow?', avatar: '/avatars/bob.jpg' },
-  { id: 53, name: 'Carol Williams', lastMessage: 'Thanks for your help!', avatar: '/avatars/carol.jpg' },
-  { id: 54, name: 'David Brown', lastMessage: "I'll send you the files soon.", avatar: '/avatars/david.jpg' },
-  { id: 55, name: 'Eva Davis', lastMessage: 'Looking forward to the weekend!', avatar: '/avatars/eva.jpg' },
-  { id: 61, name: 'Alice Johnson', lastMessage: "Hey, how's it going?", avatar: '/avatars/alice.jpg' },
-  { id: 62, name: 'Bob Smith', lastMessage: 'Can we meet tomorrow?', avatar: '/avatars/bob.jpg' },
-  { id: 63, name: 'Carol Williams', lastMessage: 'Thanks for your help!', avatar: '/avatars/carol.jpg' },
-  { id: 64, name: 'David Brown', lastMessage: "I'll send you the files soon.", avatar: '/avatars/david.jpg' },
-  { id: 65, name: 'Eva Davis', lastMessage: 'Looking forward to the weekend!', avatar: '/avatars/eva.jpg' },
-]
+import { Skeleton } from '@components/ui/skeleton'
 
 const ChatList = ({ currentChat, setCurrentChat }) => {
   const [searchTerm, setSearchTerm] = useState('')
+
+  const { data, error, isLoading } = useFetch('/chats/shopkeeper')
+
+  const renderChatList = () => {
+    if (isLoading) {
+      return [...Array(10)].map((_, index) => (
+        <div
+          key={`chatItemSkeleton${index}`}
+          className='my-2 flex h-[unset] w-full flex-row gap-3 p-3 first:mt-0 last:mb-0'
+        >
+          <Skeleton className='h-10 w-10 rounded-full' />
+          <div className='flex-grow'>
+            <Skeleton className='mb-2 h-4 w-3/4' />
+            <Skeleton className='h-3 w-1/2' />
+          </div>
+        </div>
+      ))
+    }
+
+    if (error) {
+      return (
+        <span>
+          Something went wrong!!!
+          <br />
+          Code: {error.status}
+        </span>
+      )
+    }
+
+    return data.chat_rooms.chatsRooms
+      .filter((c) => c.user.username.toLowerCase().includes(searchTerm.toLowerCase()))
+      .map((chat) => (
+        <Button
+          variant={currentChat?.id == chat.id ? 'secondary' : 'outline'}
+          className={cn('my-2 flex h-[unset] w-full flex-row gap-3 p-3 first:mt-0 last:mb-0')}
+          key={chat.id}
+          onClick={() => setCurrentChat(chat)}
+        >
+          <Avatar>
+            <AvatarImage
+              src={chat.user.avatar}
+              alt={chat.user.username}
+            />
+            <AvatarFallback>{getAbbreviationName(chat.user.username || 'User')}</AvatarFallback>
+          </Avatar>
+          <div className='flex-grow text-left'>
+            {chat.lastMessage.createdBy == chat.shop.owner.id ? (
+              <>
+                <p className={`font-medium leading-none`}>{chat.user.username}</p>
+                <p className={`text-sm text-muted-foreground`}>Bạn: {chat.lastMessage.message}</p>
+              </>
+            ) : (
+              <>
+                <p className={`${chat.lastMessage.isRead ? 'font-medium' : 'font-bold'} leading-none`}>{chat.user.username}</p>
+                <p className={`text-sm text-muted-foreground ${chat.lastMessage.isRead ? '' : 'font-bold'}`}>
+                  {chat.lastMessage.message}
+                </p>
+              </>
+            )}
+          </div>
+        </Button>
+      ))
+  }
 
   return (
     <div className='flex min-w-80 flex-col gap-4'>
@@ -64,35 +92,7 @@ const ChatList = ({ currentChat, setCurrentChat }) => {
           className='pl-8'
         />
       </div>
-      <ScrollArea className='flex flex-col'>
-        {chats
-          .filter((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()))
-          .map((chat) => (
-            <Button
-              variant={currentChat == chat.id ? 'secondary' : 'outline'}
-              className={cn('my-2 flex h-[unset] w-full flex-row gap-3 p-3 first:mt-0 last:mb-0')}
-              key={chat.id}
-              onClick={() => setCurrentChat(chat.id)}
-            >
-              <Avatar>
-                <AvatarImage
-                  src={chat.avatar}
-                  alt={chat.name}
-                />
-                <AvatarFallback>
-                  {chat.name
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')}
-                </AvatarFallback>
-              </Avatar>
-              <div className='flex-grow text-left'>
-                <p className='font-medium leading-none'>{chat.name}</p>
-                <p className='text-sm text-muted-foreground'>{chat.lastMessage}</p>
-              </div>
-            </Button>
-          ))}
-      </ScrollArea>
+      <ScrollArea className='flex flex-col'>{renderChatList()}</ScrollArea>
     </div>
   )
 }
