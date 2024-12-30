@@ -1,17 +1,16 @@
 'use client'
 
-import { use } from 'react'
 import useFetch from '@hooks/use-fetch'
 
 import AppWrapper from '@components/app-wrapper'
-import ShopCard, { ShopCardSkeleton } from './shop-card'
+import ShopEditForm from './form'
 
-const ShopPage = () => {
+const ProfileEditPage = () => {
   const { data, error, isLoading } = useFetch(`/shopkeepers/me`)
 
-  const renderShop = () => {
+  const renderForm = () => {
     if (isLoading) {
-      return <ShopCardSkeleton />
+      return <span className='animate-pulse text-center'>Đang tải...</span>
     }
 
     if (error) {
@@ -24,17 +23,17 @@ const ShopPage = () => {
       )
     }
 
-    return <ShopCard shop={data} />
+    return <ShopEditForm shop={data} />
   }
 
   return (
     <AppWrapper
-      title='Hồ sơ cửa hàng'
-      className='flex flex-col gap-4'
+      title='Chỉnh sửa hồ sơ'
+      routeTree={[{ url: '/profile', name: 'Hồ sơ cửa hàng' }]}
     >
-      {renderShop()}
+      {renderForm()}
     </AppWrapper>
   )
 }
 
-export default ShopPage
+export default ProfileEditPage
