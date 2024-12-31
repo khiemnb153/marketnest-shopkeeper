@@ -27,7 +27,7 @@ const ChatDisplay = ({ chat }) => {
   const [img2Send, setImg2Send] = useState()
   const [sending, setSending] = useState(false)
 
-  const { data, error, isLoading } = useFetch(chat ? '/chats/chat-rooms/' + chat.id : null)
+  const { data, error, isLoading } = useFetch(chat ? '/chats/chat-rooms/' + chat.id : null, { refreshInterval: 1000 })
 
   const renderMessages = () => {
     if (isLoading) {
@@ -54,6 +54,7 @@ const ChatDisplay = ({ chat }) => {
         >
           {!!msg.image && (
             <Image
+              priority
               src={msg.image}
               alt='msg-image'
               width={256}

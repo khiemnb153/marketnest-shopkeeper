@@ -1,6 +1,0 @@
-- Trang chủ (biểu đồ)
-- Sản phẩm (sửa, xóa, ẩn)
-- Đơn hàng
-- Ưu đãi (thêm, xóa, sửa)
-- Gắn API
-- Hồ sơ cửa hàng

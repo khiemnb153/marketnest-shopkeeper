@@ -6,6 +6,7 @@ import {
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
+  PaginationEllipsis,
   PaginationLink,
 } from '@components/ui/pagination'
 
@@ -38,7 +39,7 @@ const CommonPagination = ({ route, searchParams, totalPages }) => {
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={buildUrl('/products', {
+            href={buildUrl(route, {
               pageIndex: pageIndex - 1,
               pageSize: pageSize,
               searchName: searchName,
@@ -59,11 +60,11 @@ const CommonPagination = ({ route, searchParams, totalPages }) => {
 
         {pageIndex < totalPages - 2 && renderEllipsis()}
 
-        {totalPages !== 1 && renderPageLink(totalPages)}
+        {totalPages > 1 && renderPageLink(totalPages)}
 
         <PaginationItem>
           <PaginationNext
-            href={buildUrl('/products', {
+            href={buildUrl(route, {
               pageIndex: pageIndex + 1,
               pageSize: pageSize,
               searchName: searchName,

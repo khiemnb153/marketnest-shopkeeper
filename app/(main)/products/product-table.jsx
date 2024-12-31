@@ -12,6 +12,8 @@ import Image from 'next/image'
 import ProductStatusBadge from './product-status-badge'
 
 const ProductTable = ({ products, searchParams }) => {
+  console.log(products)
+
   const router = useRouter()
   const { pageIndex, pageSize, searchName } = searchParams
 

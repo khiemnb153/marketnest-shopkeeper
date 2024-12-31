@@ -25,13 +25,13 @@ const NewVoucherPage = () => {
     })
 
     if (!res.ok) {
-      toast.error(`Cập nhật khuyến mãi thất bại. Code: ${res.status}`)
+      toast.error(`Tạo khuyến mãi thất bại. Code: ${res.status}`)
       console.log(await res.json())
 
       return
     }
 
-    toast.success(`Cập nhật khuyến mãi thành công.`)
+    toast.success(`Tạo khuyến mãi thành công.`)
 
     router.push(`/vouchers/${(await res.json()).data.id}`)
   }
