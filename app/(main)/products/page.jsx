@@ -1,33 +1,58 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, use } from 'react'
 import { buildUrl } from '@lib/utils'
+import useFetch from '@hooks/use-fetch'
 import { useRouter } from 'next/navigation'
 
 import { Search, Plus } from 'lucide-react'
 
 import AppWrapper from '@components/app-wrapper'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, SelectLabel } from '@components/ui/select'
 import { Button } from '@components/ui/button'
 import { Input } from '@components/ui/input'
 import Link from 'next/link'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, SelectLabel } from '@components/ui/select'
+import CommonPagination from '@components/common-pagination'
 
-import DataBlock from '@components/data-block'
-import ProductTable from './product-table'
-import ProductLoadingSkeleton from './product-loading-skeletion'
+import ProductTable, { ProductTableSkeleton } from './product-table'
 
 const ProductsPage = ({ searchParams }) => {
+  const router = useRouter()
   const query = use(searchParams)
 
-  const { pageIndex = 1 } = query
-  const [pageSize, setPageSize] = useState(query.pageSize || 10)
+  const pageIndex = parseInt(query.pageIndex) || 1
+  const [pageSize, setPageSize] = useState(parseInt(query.pageSize) || 10)
   const [searchName, setSearchName] = useState(query.searchName || '')
 
-  const router = useRouter()
+  const { data, error, isLoading } = useFetch(
+    buildUrl('/shopkeepers/products', { pageIndex, searchName: query.searchName || '', pageSize })
+  )
 
-  useEffect(() => {
-    router.push(buildUrl('/products', { pageIndex: 1, pageSize, searchName }))
-  }, [pageSize])
+  const renderProductTable = () => {
+    if (isLoading) {
+      return <ProductTableSkeleton pageSize={pageSize} />
+    }
+
+    if (error) {
+      return (
+        <span>
+          Something went wrong!!!
+          <br />
+          Code: {error.status}
+        </span>
+      )
+    }
+
+    return (
+      <ProductTable
+        products={data.products.map((prod) => ({
+          ...prod,
+          status: prod.status == 'Active' && prod.stock == 0 ? 'Out_Of_Stock' : prod.status,
+        }))}
+        searchParams={{ pageIndex, pageSize, searchName }}
+      />
+    )
+  }
 
   return (
     <AppWrapper
@@ -56,7 +81,7 @@ const ProductsPage = ({ searchParams }) => {
               className='px-3'
               asChild
             >
-              <Link href={buildUrl('/products', { pageIndex, pageSize, searchName })}>
+              <Link href={buildUrl('/products', { pageIndex: 1, pageSize, searchName })}>
                 <Search />
               </Link>
             </Button>
@@ -66,7 +91,10 @@ const ProductsPage = ({ searchParams }) => {
         <div className='flex flex-row items-center gap-2'>
           <Select
             value={pageSize}
-            onValueChange={(value) => setPageSize(value)}
+            onValueChange={(value) => {
+              setPageSize(value)
+              router.push(buildUrl('/products', { pageIndex: 1, pageSize: value, searchName }))
+            }}
           >
             <SelectTrigger>
               <SelectValue placeholder='Kích thước trang' />
@@ -83,13 +111,15 @@ const ProductsPage = ({ searchParams }) => {
         </div>
       </div>
 
-      <DataBlock
-        api={'/shopkeepers/products'}
-        searchParams={{ pageIndex: parseInt(pageIndex), pageSize: parseInt(pageSize), searchName: query.searchName || '' }}
-        renderTemplate={ProductTable}
-        loadingSkeletion={<ProductLoadingSkeleton />}
-        errorUI={<span>Error</span>}
-      />
+      {renderProductTable()}
+
+      {!!data && (
+        <CommonPagination
+          route={'/products'}
+          searchParams={{ pageIndex, pageSize, searchName }}
+          totalPages={data.totalPages}
+        />
+      )}
     </AppWrapper>
   )
 }

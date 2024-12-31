@@ -1,16 +1,40 @@
 'use client'
 
-import { useSWRConfig } from 'swr'
-import useFetch from '@hooks/use-fetch'
 import { use } from 'react'
-import { buildUrl } from '@lib/utils'
+import useFetch from '@hooks/use-fetch'
 
 import AppWrapper from '@components/app-wrapper'
-import DataBlock from '@components/data-block'
-import ProductCard from './product-card'
+import ProductCard, { ProductCardSkeleton } from './product-card'
 
 const ProductPage = ({ params }) => {
   const { id } = use(params)
+
+  const { data, error, isLoading } = useFetch(`/products/${id}`)
+
+  const renderProduct = () => {
+    if (isLoading) {
+      return <ProductCardSkeleton />
+    }
+
+    if (error) {
+      return (
+        <span>
+          Something went wrong!!!
+          <br />
+          Code: {error.status}
+        </span>
+      )
+    }
+
+    return (
+      <ProductCard
+        product={{
+          ...data.product,
+          status: data.product.status == 'Active' && data.product.stock == 0 ? 'Out_Of_Stock' : data.product.status,
+        }}
+      />
+    )
+  }
 
   return (
     <AppWrapper
@@ -18,12 +42,7 @@ const ProductPage = ({ params }) => {
       routeTree={[{ url: '/products', name: 'Quản lý sản phẩm' }]}
       className='flex flex-col gap-4'
     >
-      <DataBlock
-        api={`/products/${id}`}
-        renderTemplate={ProductCard}
-        loadingSkeletion={<span>Đang tải...</span>}
-        errorUI={<span>Đã có lỗi xảy ra</span>}
-      />
+      {renderProduct()}
     </AppWrapper>
   )
 }

@@ -13,7 +13,16 @@ const productSchema = z.object({
       })
     )
     .min(1, 'Sản phẩm phải thuộc ít nhất một danh mục'),
-  images: z.array(z.instanceof(File)).min(1, 'Phải có ít nhất một tệp hình ảnh hợp lệ'),
+  images: z
+    .array(
+      z.object({
+        src: z.instanceof(File).optional(),
+        preview: z.string(),
+        id: z.string(),
+        uploaded: z.boolean(),
+      })
+    )
+    .min(1, 'Phải có ít nhất một tệp hình ảnh hợp lệ'),
 })
 
 export default productSchema
