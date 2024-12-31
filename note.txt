@@ -1,6 +1,33 @@
-- Trang chủ (biểu đồ)
-- Sản phẩm (sửa, xóa, ẩn)
-- Đơn hàng
-- Ưu đãi (thêm, xóa, sửa)
-- Gắn API
-- Hồ sơ cửa hàng
+- [x] Trang chủ (biểu đồ)
+
+- [ ] Sản phẩm
+      - [x] Liệt kê
+      - [x] Xem
+      - [x] Thêm
+      - [ ] Sửa
+      - [x] Out-of-stock status logic
+      - [x] Ẩn
+      - [x] Xóa
+
+- [ ] Đơn hàng
+      - [x] Liệt kê
+      - [x] Xem
+      - [ ] Cập nhật trạng thái
+
+- [ ] Xử lý hoàn trả
+      - [ ] Liệt kê
+      - [ ] Xem
+      - [ ] Cập nhật trạng thái
+
+- [x] Ưu đãi
+      - [x] Liệt kê
+      - [x] Xem
+      - [x] Thêm
+      - [x] Sửa
+      - [x] Kích hoạt/Vô hiệu
+      - [x] Xóa
+- [x] Chat
+
+- [ ] Hồ sơ cửa hàng
+      - [x] Xem
+      - [ ] Sửa

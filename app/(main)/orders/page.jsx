@@ -59,33 +59,7 @@ const OrdersPage = ({ searchParams }) => {
       className='flex flex-col gap-4'
     >
       <div className='flex-row-gap-4 flex justify-between'>
-        <div className='flex flex-row gap-4'>
-          <Button
-            asChild
-            className='px-3'
-          >
-            <Link href={'/orders/new'}>
-              <Plus /> Thêm
-            </Link>
-          </Button>
-          <div className='flex flex-row gap-2'>
-            <Input
-              className='w-56'
-              placeholder='Nhập từ khóa để tìm kiếm...'
-              value={searchName}
-              onChange={(e) => setSearchName(e.target.value)}
-            />
-            <Button
-              variant='ghost'
-              className='px-3'
-              asChild
-            >
-              <Link href={buildUrl('/orders', { pageIndex: 1, pageSize, searchName })}>
-                <Search />
-              </Link>
-            </Button>
-          </div>
-        </div>
+        <div className='flex flex-row gap-4'></div>
 
         <div className='flex flex-row items-center gap-2'>
           <Select

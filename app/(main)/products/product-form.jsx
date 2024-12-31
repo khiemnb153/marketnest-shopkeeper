@@ -22,12 +22,12 @@ const ProductForm = ({ defaultValues, onSubmit, submitting, actionLabel }) => {
   const form = useForm({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: defaultValues.name || '',
-      description: defaultValues.description || '',
-      price: defaultValues.price || 0,
-      stock: defaultValues.stock || 0,
-      categories: defaultValues.categories || [],
-      images: defaultValues.images || [],
+      name: defaultValues?.name || '',
+      description: defaultValues?.description || '',
+      price: defaultValues?.price || 0,
+      stock: defaultValues?.stock || 0,
+      categories: defaultValues?.categories || [],
+      images: defaultValues?.images || [],
     },
   })
 

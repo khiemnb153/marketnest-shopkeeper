@@ -146,7 +146,7 @@ export default function VoucherForm({ defaultValues, title, description, mode, o
                 name='conditions.min_value'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Áp dụng cho đơn từ (₫)</FormLabel>
+                    <FormLabel>Áp dụng cho đơn từ ($)</FormLabel>
                     <FormControl>
                       <Input
                         type='number'
@@ -164,7 +164,7 @@ export default function VoucherForm({ defaultValues, title, description, mode, o
                 name='conditions.max_value'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Giảm tối đa (₫)</FormLabel>
+                    <FormLabel>Giảm tối đa ($)</FormLabel>
                     <FormControl>
                       <Input
                         type='number'

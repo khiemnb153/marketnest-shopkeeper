@@ -16,7 +16,7 @@ import { Skeleton } from '@components/ui/skeleton'
 const ChatList = ({ currentChat, setCurrentChat }) => {
   const [searchTerm, setSearchTerm] = useState('')
 
-  const { data, error, isLoading } = useFetch('/chats/shopkeeper')
+  const { data, error, isLoading } = useFetch('/chats/shopkeeper', { refreshInterval: 1000 })
 
   const renderChatList = () => {
     if (isLoading) {
@@ -84,7 +84,7 @@ const ChatList = ({ currentChat, setCurrentChat }) => {
       <div className='relative'>
         <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
         <Input
-          placeholder='Search users'
+          placeholder='Nhập tên người dùng để tìm kiếm'
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value)

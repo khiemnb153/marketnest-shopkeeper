@@ -4,7 +4,7 @@ import { use, useState } from 'react'
 import useFetch from '@hooks/use-fetch'
 import { postImage } from '@lib/post-media'
 import { useRouter } from 'next/navigation'
-import { useSWRConfig } from 'swr'
+import { mutate, useSWRConfig } from 'swr'
 import { toast } from 'sonner'
 
 import AppWrapper from '@components/app-wrapper'
@@ -31,6 +31,8 @@ const ProductEditPage = ({ params }) => {
 
     const uploadedUrls = await Promise.all(uploadPromises)
 
+    console.log(uploadedUrls)
+
     const res = await fetch(process.env.NEXT_PUBLIC_API_BASE + `/products/${id}`, {
       method: 'PUT',
       headers: {
@@ -53,6 +55,7 @@ const ProductEditPage = ({ params }) => {
 
     toast.success('Chỉnh sửa sản phẩm thành công')
 
+    mutate('/products/' + id)
     router.push('/products/' + id)
   }
 
