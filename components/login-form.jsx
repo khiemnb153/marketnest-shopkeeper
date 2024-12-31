@@ -49,7 +49,7 @@ export function LoginForm() {
               type='email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder='admin@marketnest.com'
+              placeholder='shopkeeper@marketnest.com'
               required
             />
           </div>
