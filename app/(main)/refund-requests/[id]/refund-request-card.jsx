@@ -88,7 +88,7 @@ const RefundRequestCard = ({ refundRequest }) => {
 
           <div className='flex justify-between'>
             <span className='inline-block w-[200px] font-bold'>Sản phẩm:</span>
-            {refundRequest.product.name}
+            {refundRequest.product?.name || 'Không tồn tại'}
           </div>
 
           <div className='flex justify-between'>
