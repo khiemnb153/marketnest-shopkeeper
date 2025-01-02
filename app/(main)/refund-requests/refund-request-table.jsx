@@ -52,7 +52,7 @@ const RefundRequestTable = ({ refundRequests, searchParams }) => {
                 {refundRequest.user.username}
               </div>
             </TableCell>
-            <TableCell>{refundRequest.product.name}</TableCell>
+            <TableCell>{refundRequest.product?.name || 'Không tồn tại'}</TableCell>
             <TableCell>{refundRequest.refundReason}</TableCell>
             <TableCell className='text-center'>{moment(refundRequest.requestDate).format('HH:mm DD/MM/YYYY')}</TableCell>
             <TableCell className='text-center'>
