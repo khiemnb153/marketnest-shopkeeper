@@ -149,13 +149,13 @@ const OrderCard = ({ order }) => {
                 <TableRow key={index}>
                   <TableCell className='flex items-center gap-2 font-bold'>
                     <Image
-                      src={item.product.images[0] || 'https://placehold.co/36/png'}
-                      alt={item.product.name}
+                      src={item.product?.images[0] || 'https://placehold.co/36/png'}
+                      alt={item.product?.name}
                       width={36}
                       height={36}
                       className='aspect-square h-9 rounded-md object-cover'
                     />
-                    {item.product.name}
+                    {item.product?.name}
                   </TableCell>
                   <TableCell className='text-right'>{item.quantity}</TableCell>
                   <TableCell className='text-right'>{currency.format(item.price)}</TableCell>
